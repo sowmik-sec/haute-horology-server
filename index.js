@@ -71,6 +71,12 @@ const run = async () => {
       const user = await userCollection.findOne(query);
       res.send({ isAdmin: user?.isAdmin === true });
     });
+    app.get("/users/seller/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = await userCollection.findOne(query);
+      res.send({ isSeller: user?.role === "seller" });
+    });
     app.post("/users", async (req, res) => {
       const user = req.body;
       const result = await userCollection.insertOne(user);
