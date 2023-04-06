@@ -37,6 +37,17 @@ const run = async () => {
   try {
     const brandCollection = client.db("houteHorology").collection("brands");
     const userCollection = client.db("houteHorology").collection("users");
+
+    // NOTE: make sure you use verifyAdmin after verifyJWT
+    const verifyAdmin = async (req, res, next) => {
+      const decodedEmail = req.decoded.email;
+      const query = { email: decodedEmail };
+      const user = await userCollection.findOne(query);
+      if (user.isAdmin !== true) {
+        return res.status(403).send({ message: "forbidden access" });
+      }
+      next();
+    };
     app.get("/brands", async (req, res) => {
       const query = {};
       const brands = await brandCollection.find(query).toArray();
