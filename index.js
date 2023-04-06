@@ -20,10 +20,16 @@ const client = new MongoClient(uri, {
 const run = async () => {
   try {
     const brandCollection = client.db("houteHorology").collection("brands");
+    const userCollection = client.db("houteHorology").collection("users");
     app.get("/brands", async (req, res) => {
       const query = {};
       const brands = await brandCollection.find(query).toArray();
       res.send(brands);
+    });
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const result = await userCollection.insertOne(user);
+      res.send(result);
     });
   } finally {
   }
