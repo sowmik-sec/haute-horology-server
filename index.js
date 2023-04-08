@@ -37,6 +37,7 @@ const run = async () => {
   try {
     const brandCollection = client.db("houteHorology").collection("brands");
     const userCollection = client.db("houteHorology").collection("users");
+    const watchCollection = client.db("houteHorology").collection("watches");
 
     // NOTE: make sure you use verifyAdmin after verifyJWT
     const verifyAdmin = async (req, res, next) => {
@@ -82,6 +83,11 @@ const run = async () => {
       const query = { email };
       const user = await userCollection.findOne(query);
       res.send({ isBuyer: user?.role === "buyer" });
+    });
+    app.post("/watches", async (req, res) => {
+      const watch = req.body;
+      const result = await watchCollection.insertOne(watch);
+      res.send(result);
     });
     app.post("/users", async (req, res) => {
       const user = req.body;
