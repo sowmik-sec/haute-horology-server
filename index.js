@@ -84,7 +84,17 @@ const run = async () => {
       const user = await userCollection.findOne(query);
       res.send({ isBuyer: user?.role === "buyer" });
     });
-    app.post("/watches", async (req, res) => {
+    app.get("/watches", verifyJWT, async (req, res) => {
+      const email = req.query.email;
+      const decodedEmail = req.decoded.email;
+      if (email !== decodedEmail) {
+        return res.status(403).send({ message: "forbidden access" });
+      }
+      const query = { sellerEmail: email };
+      const cursor = await watchCollection.find(query).toArray();
+      res.send(cursor);
+    });
+    app.post("/watches", verifyJWT, async (req, res) => {
       const watch = req.body;
       const result = await watchCollection.insertOne(watch);
       res.send(result);
