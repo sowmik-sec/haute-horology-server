@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
@@ -97,6 +97,22 @@ const run = async () => {
     app.post("/watches", verifyJWT, async (req, res) => {
       const watch = req.body;
       const result = await watchCollection.insertOne(watch);
+      res.send(result);
+    });
+    app.put("/watches/:id", verifyJWT, async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          isAdvertised: true,
+        },
+      };
+      const result = await watchCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
       res.send(result);
     });
     app.post("/users", async (req, res) => {
