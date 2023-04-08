@@ -49,6 +49,15 @@ const run = async () => {
       }
       next();
     };
+    const verifySeller = async (req, res, next) => {
+      const decodedEmail = req.decoded.email;
+      const query = { email: decodedEmail };
+      const user = await userCollection.findOne(query);
+      if (user.role !== "seller") {
+        return res.status(403).send({ message: "forbidden access" });
+      }
+      next();
+    };
     app.get("/brands", async (req, res) => {
       const query = {};
       const brands = await brandCollection.find(query).toArray();
@@ -84,7 +93,7 @@ const run = async () => {
       const user = await userCollection.findOne(query);
       res.send({ isBuyer: user?.role === "buyer" });
     });
-    app.get("/watches", verifyJWT, async (req, res) => {
+    app.get("/watches", verifyJWT, verifySeller, async (req, res) => {
       const email = req.query.email;
       const decodedEmail = req.decoded.email;
       if (email !== decodedEmail) {
@@ -94,12 +103,12 @@ const run = async () => {
       const cursor = await watchCollection.find(query).toArray();
       res.send(cursor);
     });
-    app.post("/watches", verifyJWT, async (req, res) => {
+    app.post("/watches", verifyJWT, verifySeller, async (req, res) => {
       const watch = req.body;
       const result = await watchCollection.insertOne(watch);
       res.send(result);
     });
-    app.put("/watches/:id", verifyJWT, async (req, res) => {
+    app.put("/watches/:id", verifyJWT, verifySeller, async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const options = { upsert: true };
@@ -115,7 +124,7 @@ const run = async () => {
       );
       res.send(result);
     });
-    app.delete("/watches/:id", verifyJWT, async (req, res) => {
+    app.delete("/watches/:id", verifyJWT, verifySeller, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await watchCollection.deleteOne(query);
