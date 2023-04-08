@@ -103,6 +103,14 @@ const run = async () => {
       const cursor = await watchCollection.find(query).toArray();
       res.send(cursor);
     });
+    app.get("/watches/brand/:brand", verifyJWT, async (req, res) => {
+      const brand = req.params.brand;
+      console.log(brand);
+      const filter = { brand: brand };
+      const result = await watchCollection.find(filter).toArray();
+      console.log("result = ", result);
+      res.send(result);
+    });
     app.post("/watches", verifyJWT, verifySeller, async (req, res) => {
       const watch = req.body;
       const result = await watchCollection.insertOne(watch);
