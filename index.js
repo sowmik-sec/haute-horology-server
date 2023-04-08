@@ -115,6 +115,12 @@ const run = async () => {
       );
       res.send(result);
     });
+    app.delete("/watches/:id", verifyJWT, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await watchCollection.deleteOne(query);
+      res.send(result);
+    });
     app.post("/users", async (req, res) => {
       const user = req.body;
       const result = await userCollection.insertOne(user);
