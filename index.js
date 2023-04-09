@@ -116,7 +116,7 @@ const run = async () => {
       const result = await watchCollection.findOne(query);
       res.send(result);
     });
-    app.post("/watch/buy", async (req, res) => {
+    app.post("/watch/buy", verifyJWT, async (req, res) => {
       const details = req.body;
       const result = await soldCollection.insertOne(details);
       res.send(result);
@@ -126,7 +126,7 @@ const run = async () => {
       const result = await watchCollection.insertOne(watch);
       res.send(result);
     });
-    app.put("/watch/:id", async (req, res) => {
+    app.put("/watch/:id", verifyJWT, async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const options = { upsert: true };
