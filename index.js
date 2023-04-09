@@ -126,6 +126,22 @@ const run = async () => {
       const result = await watchCollection.insertOne(watch);
       res.send(result);
     });
+    app.put("/watch/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          status: "sold",
+        },
+      };
+      const result = await watchCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
+    });
     app.put("/watches/:id", verifyJWT, verifySeller, async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
