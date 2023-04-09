@@ -122,6 +122,11 @@ const run = async () => {
       const result = await orderCollection.find(query).toArray();
       res.send(result);
     });
+    app.get("/watches/all", verifyJWT, async (req, res) => {
+      const query = { status: "unsold" };
+      const result = await watchCollection.find(query).toArray();
+      res.send(result);
+    });
     app.post("/watch/buy", verifyJWT, async (req, res) => {
       const details = req.body;
       const result = await orderCollection.insertOne(details);
