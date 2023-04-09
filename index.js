@@ -105,10 +105,14 @@ const run = async () => {
     });
     app.get("/watches/brand/:brand", verifyJWT, async (req, res) => {
       const brand = req.params.brand;
-      console.log(brand);
       const filter = { brand: brand };
       const result = await watchCollection.find(filter).toArray();
-      console.log("result = ", result);
+      res.send(result);
+    });
+    app.get("/watches/single-brand/:id", verifyJWT, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await watchCollection.findOne(query);
       res.send(result);
     });
     app.post("/watches", verifyJWT, verifySeller, async (req, res) => {
