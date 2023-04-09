@@ -142,6 +142,22 @@ const run = async () => {
       );
       res.send(result);
     });
+    // temporarily update sell status
+    // app.get("/watch", async (req, res) => {
+    //   const filter = {};
+    //   const options = { upsert: true };
+    //   const updatedDoc = {
+    //     $set: {
+    //       status: "unsold",
+    //     },
+    //   };
+    //   const result = await watchCollection.updateMany(
+    //     filter,
+    //     updatedDoc,
+    //     options
+    //   );
+    //   res.send(result);
+    // });
     app.put("/watches/:id", verifyJWT, verifySeller, async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
