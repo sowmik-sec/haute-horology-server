@@ -106,7 +106,7 @@ const run = async () => {
     });
     app.get("/watches/brand/:brand", verifyJWT, async (req, res) => {
       const brand = req.params.brand;
-      const filter = { brand: brand };
+      const filter = { brand: brand, status: "unsold" };
       const result = await watchCollection.find(filter).toArray();
       res.send(result);
     });
