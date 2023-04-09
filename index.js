@@ -116,6 +116,12 @@ const run = async () => {
       const result = await watchCollection.findOne(query);
       res.send(result);
     });
+    app.get("/my-orders", async (req, res) => {
+      const email = req.query.email;
+      const query = { buyerEmail: email };
+      const result = await soldCollection.find(query).toArray();
+      res.send(result);
+    });
     app.post("/watch/buy", verifyJWT, async (req, res) => {
       const details = req.body;
       const result = await soldCollection.insertOne(details);
