@@ -180,6 +180,12 @@ const run = async () => {
       );
       res.send(result);
     });
+    app.delete("/my-orders/:id", verifyJWT, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await soldCollection.deleteOne(query);
+      res.send(result);
+    });
     app.delete("/watches/:id", verifyJWT, verifySeller, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
