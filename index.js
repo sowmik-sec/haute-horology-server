@@ -38,7 +38,7 @@ const run = async () => {
     const brandCollection = client.db("houteHorology").collection("brands");
     const userCollection = client.db("houteHorology").collection("users");
     const watchCollection = client.db("houteHorology").collection("watches");
-    const soldCollection = client.db("houteHorology").collection("sold");
+    const orderCollection = client.db("houteHorology").collection("orders");
 
     // NOTE: make sure you use verifyAdmin after verifyJWT
     const verifyAdmin = async (req, res, next) => {
@@ -116,15 +116,15 @@ const run = async () => {
       const result = await watchCollection.findOne(query);
       res.send(result);
     });
-    app.get("/my-orders", async (req, res) => {
+    app.get("/my-orders", verifyJWT, async (req, res) => {
       const email = req.query.email;
       const query = { buyerEmail: email };
-      const result = await soldCollection.find(query).toArray();
+      const result = await orderCollection.find(query).toArray();
       res.send(result);
     });
     app.post("/watch/buy", verifyJWT, async (req, res) => {
       const details = req.body;
-      const result = await soldCollection.insertOne(details);
+      const result = await orderCollection.insertOne(details);
       res.send(result);
     });
     app.post("/watches", verifyJWT, verifySeller, async (req, res) => {
@@ -199,7 +199,7 @@ const run = async () => {
     app.delete("/my-orders/:id", verifyJWT, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
-      const result = await soldCollection.deleteOne(query);
+      const result = await orderCollection.deleteOne(query);
       res.send(result);
     });
     app.delete("/watches/:id", verifyJWT, verifySeller, async (req, res) => {
