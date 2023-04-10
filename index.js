@@ -148,6 +148,11 @@ const run = async () => {
       const result = await userCollection.find(query).toArray();
       res.send(result);
     });
+    app.get("/reported-items", verifyJWT, verifyAdmin, async (req, res) => {
+      const query = { isReported: true };
+      const result = await watchCollection.find(query).toArray();
+      res.send(result);
+    });
     app.post("/create-payment-intent", verifyJWT, async (req, res) => {
       const order = req.body;
       const price = order.price;
