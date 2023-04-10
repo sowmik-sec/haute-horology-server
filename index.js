@@ -163,6 +163,11 @@ const run = async () => {
       const result = await watchCollection.find(query).toArray();
       res.send(result);
     });
+    app.get("/featured-brand", async (req, res) => {
+      const query = {};
+      const result = await brandCollection.find(query).limit(3).toArray();
+      res.send(result);
+    });
     app.post("/create-payment-intent", verifyJWT, async (req, res) => {
       const order = req.body;
       const price = order.price;
