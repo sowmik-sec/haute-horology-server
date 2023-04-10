@@ -154,12 +154,12 @@ const run = async () => {
       res.send(result);
     });
     app.get("/advertised-items-3", async (req, res) => {
-      const query = { isAdvertised: true };
+      const query = { isAdvertised: true, status: "unsold" };
       const result = await watchCollection.find(query).limit(3).toArray();
       res.send(result);
     });
-    app.get("/advertise-all", async (req, res) => {
-      const query = { isAdvertised: true };
+    app.get("/advertised-all-seller", async (req, res) => {
+      const query = { isAdvertised: true, status: "unsold" };
       const result = await watchCollection.find(query).toArray();
       res.send(result);
     });
