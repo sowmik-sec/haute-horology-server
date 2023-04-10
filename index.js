@@ -41,6 +41,9 @@ const run = async () => {
     const userCollection = client.db("houteHorology").collection("users");
     const watchCollection = client.db("houteHorology").collection("watches");
     const orderCollection = client.db("houteHorology").collection("orders");
+    const paymentsCollection = client
+      .db("houteHorology")
+      .collection("payments");
 
     // NOTE: make sure you use verifyAdmin after verifyJWT
     const verifyAdmin = async (req, res, next) => {
@@ -139,7 +142,7 @@ const run = async () => {
       const order = req.body;
       const price = order.price;
       const amount = price * 100;
-      const paymentIntent = await stripe.paymentIntent.create({
+      const paymentIntent = await stripe.paymentIntents.create({
         currency: "usd",
         amount: amount,
         payment_method_types: ["card"],
@@ -147,6 +150,25 @@ const run = async () => {
       res.send({
         clientSecret: paymentIntent.client_secret,
       });
+    });
+    app.post("/payments", verifyJWT, async (req, res) => {
+      const payment = req.body;
+      const result = await paymentsCollection.insertOne(payment);
+      const id = payment.orderId;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          paymentStatus: "paid",
+          transactionId: payment.transactionId,
+        },
+      };
+      const updatedResult = await orderCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
     });
     app.post("/watch/buy", verifyJWT, async (req, res) => {
       const details = req.body;
