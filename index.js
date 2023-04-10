@@ -143,6 +143,11 @@ const run = async () => {
       const result = await userCollection.find(query).toArray();
       res.send(result);
     });
+    app.get("/buyers-all", verifyJWT, verifyAdmin, async (req, res) => {
+      const query = { role: "buyer" };
+      const result = await userCollection.find(query).toArray();
+      res.send(result);
+    });
     app.post("/create-payment-intent", verifyJWT, async (req, res) => {
       const order = req.body;
       const price = order.price;
