@@ -206,6 +206,22 @@ const run = async () => {
       );
       res.send(result);
     });
+    app.put("/watches/single-brand/:id", verifyJWT, async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          isReported: true,
+        },
+      };
+      const result = await watchCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
+    });
     // temporarily update sell status
     // app.get("/watch", async (req, res) => {
     //   const filter = {};
