@@ -290,6 +290,22 @@ const run = async () => {
       );
       res.send(result);
     });
+    app.put("/seller-verify/:id", verifyJWT, verifyAdmin, async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          isVerified: true,
+        },
+      };
+      const result = await userCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
+    });
     app.delete("/my-orders/:id", verifyJWT, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
