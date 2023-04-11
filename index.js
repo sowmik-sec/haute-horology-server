@@ -168,6 +168,12 @@ const run = async () => {
       const result = await brandCollection.find(query).limit(3).toArray();
       res.send(result);
     });
+    app.get("/user", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const result = await userCollection.findOne(query);
+      res.send(result);
+    });
     app.post("/create-payment-intent", verifyJWT, async (req, res) => {
       const order = req.body;
       const price = order.price;
